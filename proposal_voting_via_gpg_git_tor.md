@@ -1,6 +1,6 @@
 # Proposing a Verifiable Anonymous Voting System Based on Email, GPG, Git and Tor
 
-`__version__ = "0.1.0"`
+`__version__ = "0.1.1"`
 
 ## Preliminary Notes
 
@@ -17,7 +17,7 @@ As far as I know, there is currently no secure online voting system. The followi
 - $N no user shall vote more than once.
 - The fact whether they voted can be public, the voting content shall be anonymous.
 - There is a predefined time interval in which voting is allowed.
-- Each user has an official email address (say user-$i@voting.org) to which they have exclusive access to.
+- Each user has an official email address (say `user-$i@voting.org`) to which they have exclusive access to.
 - Each user can use git and gnupg.
 - Every user has a pgp key-pair and the public key is known to everyone else and associated to this user.
 - Every user has two key-pairs for asymmetric encryption
@@ -32,7 +32,7 @@ As far as I know, there is currently no secure online voting system. The followi
 ## How it works
 
 - S1 generates $N voting authorization tokens (VATs).
-- S1 generate $N anonymous email addresses (AEAs) like anonymous-$j@voting.org and associated them randomly to the N official addresses via email forwarding. The association table is kept secret to S1.
+- S1 generate $N anonymous email addresses (AEAs) like `anonymous-$j@voting.org` and associated them randomly to the N official addresses via email forwarding. The association table is kept secret to S1.
 - S1 sends the list of all VATs and AEAs to S2.
 - S2 sends one random token to each e-mail address. Each email is encrypted with all $N public keys.
 - User $k recieves an encrypted mail with one VAT and decrypts it with their own private key.

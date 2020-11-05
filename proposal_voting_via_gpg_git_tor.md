@@ -1,6 +1,6 @@
 # Proposing a Verifiable Anonymous Voting System Based on Email, GPG, Git and Tor
 
-`__version__ = "0.1.2"`
+`__version__ = "0.1.3"`
 
 ## Preliminary Notes
 
@@ -14,28 +14,26 @@ As far as I know, there is currently no secure online voting system. The followi
 ## Assumptions:
 
 1. $N users want (and are entitled) to vote.
+1. $N < 100.
 2. No user shall vote more than once.
 3. The fact whether they voted can be public, the voting content shall be anonymous.
 4. There is a predefined time interval in which voting is allowed.
 5. Each user has an official email address (say `user-$i@voting.org`) to which they have exclusive access to.
 6. Each user can use git and gnupg.
 7. Every user has a pgp key-pair and the public key is known to everyone else and associated to this user.
-8. Every user has two key-pairs for asymmetric encryption
-    - Key pair 1: public key known to everyone else and associated to the official email address of user
-    - Key pair 2: public key not known to anyone (before voting)
 9. There are three server operators which do not cooperate against the rules. In particular they do not share unauthorized information among them nor with the public.
     - Server 1 (S1)
     - Server 2 (S2)
     - A public git repository for voting results (GR) to which everyone as push-access to the incoming-branch.
-10. S1 has push access to the main branch OF GR
+10. S1 has push access to the main branch of GR
 11. The servers for the infrastructure and the device on which the users vote are not corrupted and are secured against unauthorized access.
 
 
 ## How it works
 
 - S1 generates $N voting authorization tokens (VATs).
-- S1 generate $N anonymous email addresses (AEAs) like `anonymous-$j@voting.org` and associated them randomly to the N official addresses via email forwarding. The association table is kept secret to S1.
-- S1 sends the list of all VATs and AEAs to S2.
+- S1 generate $N anonymous email addresses (AEAs) like `anonymous-$j@voting.org` and associates them randomly to the N official addresses via email forwarding. The association table is kept secret by S1. Especially S2 is not allowed to know it.
+- S1 sends the list of all VATs and all AEAs to S2.
 - S2 sends one random token to each e-mail address. Each email is encrypted with all $N public keys.
 - User $k recieves an encrypted mail with one VAT and decrypts it with their own private key.
 - User $k clones the GR and makes an anonymous commit with a new text file (votes/$RANDOMNAME) containing "$VAT: $VOTING_CONTENT".
@@ -47,7 +45,7 @@ As far as I know, there is currently no secure online voting system. The followi
 
 ## Result
 
-- After voting interval is over the GR contains $n votes and $n confirmations, where $n < $N and the difference is assumed to have voluntarily not voted.
+- After voting interval is over the GR contains $n votes and $n confirmations, where $n <= $N and the difference is assumed to have voluntarily not voted.
 
 ## Claims
 

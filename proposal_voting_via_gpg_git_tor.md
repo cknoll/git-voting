@@ -1,10 +1,10 @@
 # Proposing a Verifiable Anonymous Voting System Based on Email, GPG, Git and Tor
 
-`__version__ = "0.1.1"`
+`__version__ = "0.1.2"`
 
 ## Preliminary Notes
 
-As far as I know, there is currently no secure online voting system. The following thoughts were triggered by the turbulences around the US presidential elections 2020, the ongoing protests in Belarus and the discussion about voting on online party conventions in Germany. I am neither an expert in (online) voting systems nor in cyber security but instead just a regular user of email, gpg and git and interested in how groups can manage the problem of decision-making without desintegrating. The proposal does contain some flaws which I am aware of and probably many more. Nevertheless it might be a starting point for something working.
+As far as I know, there is currently no secure online voting system. The following thoughts were triggered by the turbulences around the US presidential elections 2020, the ongoing protests in Belarus and the discussion about voting on online party conventions in Germany. I am neither an expert in (online) voting systems nor in cyber security but instead just a regular user of email, gpg and git and interested in how groups can manage the problem of decision-making without desintegrating. The proposal does contain some flaws which I am aware of and probably many more. Nevertheless it might be a starting point for something working. The assumptions below are in part admittedly unrealistic (E.g. "Each user can use git and gnupg"). They are stated this way to simplify the explanation of the voting protocol. I am confident that they can be relaxed w.r.t. to usability and robustness with a more elaborated approach.
 
 ## Guiding principles
 
@@ -13,21 +13,23 @@ As far as I know, there is currently no secure online voting system. The followi
 
 ## Assumptions:
 
-- $N users want (and are entitled) to vote.
-- $N no user shall vote more than once.
-- The fact whether they voted can be public, the voting content shall be anonymous.
-- There is a predefined time interval in which voting is allowed.
-- Each user has an official email address (say `user-$i@voting.org`) to which they have exclusive access to.
-- Each user can use git and gnupg.
-- Every user has a pgp key-pair and the public key is known to everyone else and associated to this user.
-- Every user has two key-pairs for asymmetric encryption
+1. $N users want (and are entitled) to vote.
+2. No user shall vote more than once.
+3. The fact whether they voted can be public, the voting content shall be anonymous.
+4. There is a predefined time interval in which voting is allowed.
+5. Each user has an official email address (say `user-$i@voting.org`) to which they have exclusive access to.
+6. Each user can use git and gnupg.
+7. Every user has a pgp key-pair and the public key is known to everyone else and associated to this user.
+8. Every user has two key-pairs for asymmetric encryption
     - Key pair 1: public key known to everyone else and associated to the official email address of user
     - Key pair 2: public key not known to anyone (before voting)
-- There are three server operators which do not cooperate against the rules. In particular they do not share unauthorized information among them nor with the public.
+9. There are three server operators which do not cooperate against the rules. In particular they do not share unauthorized information among them nor with the public.
     - Server 1 (S1)
     - Server 2 (S2)
     - A public git repository for voting results (GR) to which everyone as push-access to the incoming-branch.
-- S1 has push access to the main branch OF GR
+10. S1 has push access to the main branch OF GR
+11. The servers for the infrastructure and the device on which the users vote are not corrupted and are secured against unauthorized access.
+
 
 ## How it works
 
@@ -59,6 +61,6 @@ As far as I know, there is currently no secure online voting system. The followi
 
 ## Final Remarks
 
-The sketched approach could be improved significantly by implementing most of the user-activities in open-source software to increase usability. More division of power and knowledge and redundant versions of infrastructural entities (S1, S2 and GR) could increase robustness against vandalsim and attacks.
+The sketched approach could be improved significantly by implementing most of the user-activities in an open-source software frontend to increase usability. More division of power and knowledge and redundant versions of infrastructural entities (S1, S2 and GR) could increase robustness against vandalism and attacks.
 
 

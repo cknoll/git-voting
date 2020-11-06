@@ -1,6 +1,6 @@
 # Proposing a Verifiable Anonymous Voting System Based on Email, GPG, Git and Tor
 
-`__version__ = "0.2.0"` (expecting detailed critical feedback at 2020-11-06 15:00 UTC)
+`__version__ = "0.3.0rc"` (not yet double checked after major additions due to contructive criticism)
 
 ## Preliminary Notes
 
@@ -41,7 +41,7 @@ As far as I know, there is currently no secure online voting system. The followi
 1. S2 also generates $N pVATs. Then S2 combines randomly each pVAT from S1 with one pVAT from S2 and thereby forms a complete voting authorization token (VAT).
 1. S2 also generates $N confirmation tokens of kind A (CT-A).
 1. S2 associates randomly one VAT and one CT-A. This mapping is kept secret by S2, especially to S3.
-1. S2 sends one VAT-CT-A-pair to each anonymous e-mail address. Because the final recipient is unknown to S2, each email is encrypted with **all** $N public keys. Each email is signed with the official signature of S2.
+1. S2 sends one VAT-CT-A-pair to each anonymous e-mail address. Because the final recipient is unknown to S2, each email is encrypted with **all** $N public keys. Each email must also contain some random data to prevent S1 to create the cipher text by itself and thus break anonymity when the VATs become public later. Each email is signed with the official signature of S2.
 1. User $k recieves exactly one encrypted mail with one VAT-CT-A-pair signed by S2. They decrypt it with their own private key.
 1. User $k clones the GR and makes an anonymous commit with a new text file (votes/$RANDOMNAME) containing "$VAT: $VOTING_CONTENT". The CT-A might be used later.
 1. User $k pushes this commit over an anonymous connection (via Tor) to the incoming branch of GR.
@@ -62,21 +62,52 @@ This section collects attack scenarios and responses.
 1. $n2 < $n1 (not all votes are confirmed):
     - Possible reasons: a) Their could have been problems between voting and confirmation (device failure, ...) or b) The user actively decides not to confirm.
     - To ensure integrity of the voting we only count confirmed votes. We thus filter out those VATs which are not confirmed without breaking anonymity.
-        - We use the CT-A and S3 as a "mixer". To be detailed.
+        - S2 generates two more lists of confirmation tokens each list of length $n2: CT-B- and CT-C-list. The CT-A list was generated earlier and (as a whole) kept secret by S2. However each user already has a personal CT-A from the first (anonymously received) email.
+        - S2 publishes a list of all VAT-hashes, a list of all corresponding CT-A-hashes and an unordered list of all CT-C hashes.
+        - S2 sends both the CT-B- and CT-C-list to S3
+        - S3 generates a random one-to-one mapping between CT-B and CT-C. This mapping is kept secret by S3.
+        - S2 sends each of the $n2 users which did push a signed confirmation to GR an encrypted and signed email with a single CT-B.
+        - User $k receives and decrypts the message with the CT-B
+        - User $k recieves an (encrypted to all users) message with a CT-C from S3 in exchange for (anonymously) sendig an CT-B to S3.
+        - User $k anonymously publishes their VAT, CT-A and CT-C in the repo.
+        - Anybody can verify that this commit is valid by calculating the hashes and comparing them to the lists published and signed by S2. Invalid commits are removed from the repo by GR.
 2. $n2 > $n1 (more confirmations than votes)
-    - Can be ignored. Just count the votes.
-3. More to come ...
+    - Can be ignored. Just count all the votes.
+3. GR could inject manipulated commits or refuse to accept specific commits.
+    - There should be multiple and independently controlled instances of GR. Each user can push their commit to several repos and check the integrity of those against each other.
+4. A single user could give their secret key to S1 which would allow S1 to decrypt all e-mails
+    - not yet addressed. Probably add more layers.
 
 
 ## Claims
 
 - Anonymity
     - Only the user knows their VAT because of random assignation, encrypted emails, and anonymous connections.
-- Any fraud is detectable:
-    - S1 operator could use VATs by their own to generate votes but their would not be any signed confirmation for them.
-    - S1 could force-push to the repo but could not generate valid signatures.
+    - No single entity allone can break anonymity. Either S1 or S3 must conspire with S2 to do this. It would be easy to add more independent data-mixing layers to increase the number of necessary participants in the conspiration.
+- Trust:
+    - Any fraud against the users is detectable, each single user can confirm that there vote is represented in the result.
+    - The result cannot reasonably be disputed if the number of votes and valid confirmations matches. This can be checked by everyone.
 - Fast and Transparent Evaluation
     - Voting could be evaluated by anyone because the source data is publicly available.
+
+## Further Ideas
+
+- Specify a protocol how to transparently file a complaint in an independent (and redundant) complaint repository (CR).
+- Specify a protocol for an inherent immune system: give infrastructure entities an high incentive to report any attempt to conspire
+    - incentivize $A to falsely act as if they want to conspire with $B while having previously published an encrypted message. The key of which must be published at a given time.
+    - If $B does report this $A can prove its true intentions by publishing the key to its encrypted message.
+    - If $B does not report this to CR but instead agrees to conspire then $A can publish this agreement and identify $B as potential conspirator.
+    - There can be meta-levels to this.
+
+
+## Motivation for the Free Software Community
+
+- Currently high medial awareness due to US presidential elections.
+- Good chance to point out the importance of transparency, credibility, signatures, encryption and anonymity.
+- Good chance to raise awareness for established tools like git, gpg and tor outside of the tech bubble.
+- A good position could be: voting is a delicate act. Digital voting bears many dangers (see assumptions above), but if digital voting will come than it must at least be based on Free and Open Source Software and a community approved concept.
+
+
 
 ## Final Remarks
 

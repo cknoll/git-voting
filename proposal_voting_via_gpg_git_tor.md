@@ -1,31 +1,30 @@
 # Proposing a Verifiable Anonymous Voting System Based on Email, GPG, Git and Tor
 
-`__version__ = "0.4.0"`
+`__version__ = "0.4.1"`
 
 ## Preliminary Notes
 
 As far as I know, there is currently no secure online voting system. The following thoughts were triggered by the turbulences around the US presidential elections 2020, the ongoing protests in Belarus and the discussion about voting on online party conventions in Germany. I am neither an expert in (online) voting systems nor in cyber security but instead just a regular user of email, gpg, git and tor and I am interested in how groups can manage the problem of decision-making without desintegrating.
 
-As the version number suggests since its initial publication the proposal has evolved due to feedback. It is probably not easy to understand. Visualization is in preperation.
+As the above version number suggests the proposal has evolved since its initial publication mainly due to feedback. It is probably not trivial to understand. Visualization is in preperation.
 
 The proposal does contain some flaws which I am aware of and probably many more. Nevertheless it might be a starting point for something working. The assumptions below are in part admittedly unrealistic (E.g. "Each user can use git and gnupg"). They are stated this way to simplify the explanation of the voting protocol. I am confident that they can be relaxed w.r.t. to usability and robustness with a more elaborated approach and by implementing most of the user-activities in an (optional) open-source software frontend.
 
-Furthermore, more division of power and knowledge and redundant versions of entities could increase robustness against vandalism and attacks.
 
 
 
 ## Motivation
 
-(This section was included later in repsonse to questions and citicism. It is not necessary to understand the rest.)
+(This section was included later in repsonse to questions and citicism. It is not necessary to technically understand the rest.)
 
-### Why should the Free Software Community think About Online Voting
+### Why should the Free Software Community Think About Online Voting
 
-1. Currently high medial awareness due to US presidential elections.
+1. Currently high medial awareness due to US presidential elections and a significant amount of people who claim irregularities.
 1. Good chance to point out the importance of transparency, credibility, signatures, encryption and anonymity.
 1. Good chance to raise awareness for established tools like *git*, *gpg* and *tor* outside of the tech bubble.
-1. Very good possibility to point out an entirely positive framed use case for *tor*.
+1. Very good possibility to point out an positivly framed use case for online annonymity and *tor*.
 1. If digital voting will come, it must at least be based on Free and Open Source Software and community approved concepts.
-1. The usage of established tools (git, gpg, tor) increase the level of understandability.
+1. The usage of established tools (git, gpg, tor) increase the level of understandability (e.g. compared to blockchain based approaches).
 
 
 ### General Arguments for Online Voting
@@ -33,10 +32,10 @@ Furthermore, more division of power and knowledge and redundant versions of enti
 1. Lower participation hurdle for voters
     - Nobody wants to wait for hours in a line outside.
     - Nobody wants to visit a voting station if there are attack warnings or other intimidation mechanisms.
-2. Much Lower cost for holding an reliable election/voting (on almost any level).
-    - Allows the integration of more participative democratic elements (which is another complex topic).
+2. Much Lower cost for holding a reliable election/voting (on almost any organizational level).
+    - Allows the integration of more participative democratic elements (which is another complex topic, see below).
 
-### General Arguments Against Online Voting
+### General Arguments against Online Voting
 
 ... and attempts for counter arguments
 
@@ -55,7 +54,7 @@ Furthermore, more division of power and knowledge and redundant versions of enti
         - Provide (used) devices (PCs, notebooks) with Free Software for households which need one.
             - Additional benefit: This device could also be used for education
 3. Availability of cheap and legally safe online voting could raise the political presure towards weakening parliaments in favor of plebiscites. This could lead to much more "populist" politics and increase the influence of unbalanced media and misinformation.
-    - Unbalanced media and misinformation are general problems for (democratic) societies. An online voting procedure which is based on transparent processes and verifiability and not on the principle "Trust me, I tell the truth", could foster a more critical approach in media consumption and  production. It could raise the bars what people belive and what not.
+    - Unbalanced media and misinformation are general problems for (democratic) societies. An online voting procedure which is based on transparent processes and verifiability and not on the principle "Trust me, I tell the truth", could foster a more critical approach in media consumption and media production. It could raise the bar in what people belive and what not.
     - The decision about plebiscites (on which leveles, for which kinds of issues, who can initiate and formulate them, ...) should be up to the souvereign anyway.
 
 
@@ -68,7 +67,7 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 
 ## Guiding principles
 
-1. There is no single trusted authority.
+1. When it comes to voting there is no single trusted authority.
 1. Only Free and Open Source Software can be trustable software.
 1. Transparency prevents frauds and unjustified accusations of fraud.
 1. Power and sensitive knowledge for each entity must be divided sufficiently such that fraud is impossible without conspiration with other entities.
@@ -84,7 +83,7 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 5. Each user has an official email address (say `user-$i@voting.org`) to which they have exclusive access to.
 6. Each user can use git and gnupg.
 7. Every user has a pgp key-pair and the public key is known to everyone else and associated to this user.
-9. There are four server operators which do not cooperate against the rules. In particular they do not share unauthorized information among them nor with the public.
+9. There are four servers operated by independent actors which do not cooperate against the rules. In particular they do not share unauthorized information among them nor with the public.
     - Server 1 (S1)
     - Server 2 (S2)
     - Server 3 (S3)
@@ -97,7 +96,7 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 ## How it works (regular case)
 
 1. S1 generates $N partial voting authorization tokens (pVATs).
-1. S1 generate $N anonymous email addresses (AEAs) like `anonymous-$j@voting.org` and associates them randomly to the N official addresses via email forwarding (S1 must run a mail server). The association table is kept secret by S1. Especially S2 is not allowed to know the associations.
+1. S1 generate $N anonymous email addresses (AEAs) like `anonymous-$j@voting.org` and associates them randomly to the $N official user addresses via email forwarding (S1 must run a mail server). The association table is kept secret by S1. Especially S2 is not allowed to know the associations.
 1. S1 sends the list of all pVATs and all AEAs to S2.
 1. S2 also generates $N pVATs. Then S2 combines randomly each pVAT from S1 with one pVAT from S2 and thereby forms a complete voting authorization token (VAT).
 1. S2 also generates $N confirmation tokens of kind A (CT-A).

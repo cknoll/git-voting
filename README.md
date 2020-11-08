@@ -111,7 +111,7 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 1. S2 formally checks this commit (spam prevention) and pushes it to the main branch.
 
 
-![sequence diagram for the regular case](./diagram_regular_case.svg "sequence diagram for the regular case")
+![sequence diagram for the regular case](img/diagram_regular_case.svg "sequence diagram for the regular case")
 
 
 ### Result and Remarks
@@ -134,7 +134,7 @@ This section collects attack scenarios and responses. It probably grows over tim
         - User $k receives an (encrypted to all users) message with a CT-C from S3 in exchange for (anonymously) sending a CT-B to S3.
         - User $k anonymously publishes their VAT, CT-A and CT-C in the repo.
         - Anybody can verify that this commit is valid by calculating the hashes and comparing them to the lists published and signed by S2. Invalid commits are removed from the repo by GR.
-    - ![sequence diagram for anonymous VAT confirmation](./diagram_VAT_confirmation.svg "sequence diagram for anonymous VAT confirmation")
+    - ![sequence diagram for anonymous VAT confirmation](img/diagram_VAT_confirmation.svg "sequence diagram for anonymous VAT confirmation")
 2. $n2 > $n1 (more confirmations than votes)
     - Can be ignored. Just count all the votes.
 3. GR could inject manipulated commits or refuse to accept specific commits.

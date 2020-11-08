@@ -1,6 +1,6 @@
-# Proposing a Verifiable Anonymous Voting System Based on Email, GPG, Git and Tor
+# Proposing a Verifiable Anonymous Voting System Based on Git, Email, GPG, and Tor
 
-`__version__ = "0.4.2"`
+`__version__ = "0.5.0"`
 
 ## Preliminary Notes
 
@@ -9,7 +9,6 @@ As far as I know, there is currently no secure online voting system. The followi
 As the above version number suggests the proposal has evolved since its initial publication mainly due to feedback. It is probably not trivial to understand. Visualization is in preparation.
 
 The proposal does contain some flaws which I am aware of and probably many more. Nevertheless, it might be a starting point for something working. The assumptions below are in part admittedly unrealistic (E.g. "Each user can use git and gpg"). They are stated this way to simplify the explanation of the voting protocol. I am confident that they can be relaxed w.r.t. to usability and robustness with a more elaborated approach and by implementing most of the user-activities in an (optional) open-source software frontend.
-
 
 
 
@@ -111,6 +110,10 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 1. After a random time delay (say 0.5 to 10 minutes) user $k commits a new text file (confirmations/$RANDOMNAME) containing: "My vote is correctly represented.", signs this commit with their private key, and pushes it to incoming. This commit is non-anonymous.
 1. S2 formally checks this commit (spam prevention) and pushes it to the main branch.
 
+
+![sequence diagram for the regular case](./diagram_regular_case.svg "sequence diagram for the regular case")
+
+
 ### Result and Remarks
 
 1. After the voting interval is over the GR contains $n1 votes, where $n1 <= $N and the difference is assumed to have voluntarily not voted. It also contains $n2 confirmations where  0 <= $n2 <= N. If all users acted as they should we have $n1 = $n2.
@@ -131,6 +134,7 @@ This section collects attack scenarios and responses. It probably grows over tim
         - User $k receives an (encrypted to all users) message with a CT-C from S3 in exchange for (anonymously) sending a CT-B to S3.
         - User $k anonymously publishes their VAT, CT-A and CT-C in the repo.
         - Anybody can verify that this commit is valid by calculating the hashes and comparing them to the lists published and signed by S2. Invalid commits are removed from the repo by GR.
+    - ![sequence diagram for anonymous VAT confirmation](./diagram_VAT_confirmation.svg "sequence diagram for anonymous VAT confirmation")
 2. $n2 > $n1 (more confirmations than votes)
     - Can be ignored. Just count all the votes.
 3. GR could inject manipulated commits or refuse to accept specific commits.

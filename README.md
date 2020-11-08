@@ -82,13 +82,15 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 5. Each user has an official email address (say `user-$i@voting.org`) to which they have exclusive access to.
 6. Each user can use git and gnupg.
 7. Every user has a pgp key-pair and the public key is known to everyone else and associated with this user.
-9. There are four servers operated by independent actors that do not cooperate against the rules. In particular, they do not share unauthorized information among them nor with the public.
-    - Server 1 (S1)
+9. There are five servers operated by independent actors that do not cooperate against the rules. In particular, they do not share unauthorized information among them nor with the public.
+    - Server 1a (S1a)
+    - Server 1b (S1b)
     - Server 2 (S2)
     - Server 3 (S3)
-    - A public git repository for voting results (GR) to which everyone has push-access to the incoming-branch.
-10. S1 has push access to the branch `pVAT1-confirmed`. S2 has push access to the main branch of GR.
-12. The public key for each server is known to and trusted by all users.
+    - A public git repository for voting results (GR)
+10. Every user has push-access to the `incoming`-branch.
+10. S1a, S1b, S2 have push access to the branches `confirmed-pVAT1a`, `confirmed-pVAT1b`, and `confirmed-pVAT2`, respectively
+12. The public key for each server is known to and trusted by all users. This can be ensured during voter registration.
 11. The servers for the infrastructure and the devices on which the users vote are not corrupted and are secured against unauthorized access.
 
 
@@ -104,11 +106,11 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 1. User $k receives exactly one encrypted mail with one VAT-CT-A-pair signed by S2. They decrypt it with their own private key.
 1. User $k clones the GR and makes an anonymous commit with a new text file (votes/$RANDOMNAME1) containing "$VAT: $VOTING_CONTENT". The CT-A might be used later.
 1. User $k pushes this commit over an anonymous connection (via Tor) to the incoming branch of GR.
-1. S1 confirms that the commit contains a valid pVAT from its pVAT1-list and pushes it to the `pVAT1-confirmed` branch.
-1. S2 confirms that the commit contains a valid pVAT from its pVAT2-list and pushes it to the `main` branch.
+1. S{1a,1b,2} confirms that the commit contains a valid pVAT from its pVAT{1a,1b,2}-list and pushes it to the `confirmed-pVAT{1a,1b,2}` branch (one after another).
+1. GR confirms that the other servers have confirmed the VAT and pushes the commit to the `main` branch.
 1. User $k updates their version of the repo (`git pull`) and checks that their vote is correctly represented in the `main` branch.
-1. After a random time delay (say 0.5 to 10 minutes) user $k commits a new text file (confirmations/$RANDOMNAME2) containing: "My vote is correctly represented.", signs this commit with their private key, and pushes it to incoming. Due to the signature this commit is non-anonymous, but unrelated to the actual voting.
-1. S2 formally checks this commit (spam prevention) and pushes it to the main branch.
+1. After a random time delay (say 0.5 to 10 minutes) user $k commits a new text file (confirmations/$RANDOMNAME2) containing: "My vote is correctly represented.", signs this commit with their private key, and pushes it to incoming. Due to the signature, this commit is non-anonymous. But it is unrelated to the actual voting.
+1. GR formally checks this commit (spam prevention) and pushes it to the `main` branch.
 
 
 ![sequence diagram for the regular case](img/diagram_regular_case.svg "sequence diagram for the regular case")
@@ -139,16 +141,13 @@ This section collects attack scenarios and responses. It probably grows over tim
     - Can be ignored. Just count all the votes.
 3. GR could inject manipulated commits or refuse to accept specific commits.
     - There should be multiple and independently controlled instances of GR. Each user can push their commit to several repos and check the integrity of those against each other.
-4. A single user could give their secret key to S1 which would allow S1 to decrypt all emails.
-    - There should be at least two instances of S1, each of which provides a mail server. The sensitive information sent out by S2 or S3 should be split up into blocks (after encryption) and sent over different routes to the user. The blocks are only combined at the user's device.
-    - Every entity must be strongly incentivized to immediately report if it obtains knowledge of a users private key (see immune system below).
 
 
 ## Claims
 
 1. Anonymity
     - Only the user knows their VAT because of random assignation, encrypted emails, and anonymous connections.
-    - No single entity alone can break anonymity. Either S1 or S3 must conspire with S2 to do this. It would be easy to add more independent data-mixing layers to increase the number of necessary participants in the conspiration.
+    - No single entity alone can break anonymity. Either S1{a|b} or S3 must conspire with S2 to do this. It would be easy to add more independent data-mixing layers to increase the number of necessary participants in the conspiration.
 2. Trust:
     - Any fraud against the users is detectable, each single user can confirm that their vote is represented in the result.
     - The result cannot reasonably be disputed if the number of votes and valid confirmations matches. This can be checked by everyone.

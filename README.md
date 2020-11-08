@@ -102,12 +102,12 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 1. S2 associates randomly one VAT and one CT-A. This mapping is kept secret by S2, especially to S3.
 1. S2 sends one VAT-CT-A-pair to each anonymous e-mail address. Because the final recipient is unknown to S2, each email is encrypted with **all** $N public keys. Each email must also contain some random data to prevent S1 to create the ciphertext by itself and thus break anonymity when the VATs become public later. Each email is signed with the official signature of S2.
 1. User $k receives exactly one encrypted mail with one VAT-CT-A-pair signed by S2. They decrypt it with their own private key.
-1. User $k clones the GR and makes an anonymous commit with a new text file (votes/$RANDOMNAME) containing "$VAT: $VOTING_CONTENT". The CT-A might be used later.
+1. User $k clones the GR and makes an anonymous commit with a new text file (votes/$RANDOMNAME1) containing "$VAT: $VOTING_CONTENT". The CT-A might be used later.
 1. User $k pushes this commit over an anonymous connection (via Tor) to the incoming branch of GR.
 1. S1 confirms that the commit contains a valid pVAT from its pVAT1-list and pushes it to the `pVAT1-confirmed` branch.
 1. S2 confirms that the commit contains a valid pVAT from its pVAT2-list and pushes it to the `main` branch.
 1. User $k updates their version of the repo (`git pull`) and checks that their vote is correctly represented in the `main` branch.
-1. After a random time delay (say 0.5 to 10 minutes) user $k commits a new text file (confirmations/$RANDOMNAME) containing: "My vote is correctly represented.", signs this commit with their private key, and pushes it to incoming. This commit is non-anonymous.
+1. After a random time delay (say 0.5 to 10 minutes) user $k commits a new text file (confirmations/$RANDOMNAME2) containing: "My vote is correctly represented.", signs this commit with their private key, and pushes it to incoming. Due to the signature this commit is non-anonymous, but unrelated to the actual voting.
 1. S2 formally checks this commit (spam prevention) and pushes it to the main branch.
 
 

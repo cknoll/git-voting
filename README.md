@@ -1,6 +1,6 @@
 # Proposing a Verifiable Anonymous Voting System Based on Git, Email, GPG, and Tor
 
-`__version__ = "0.5.0"`
+`__version__ = "0.5.1"`
 
 ## Preliminary Notes
 
@@ -19,11 +19,11 @@ The proposal does contain some flaws which I am aware of and probably many more.
 ### Why Should the Free Software Community Think About Online Voting?
 
 1. Currently high medial awareness due to US presidential elections and a significant amount of people who claim irregularities.
-1. Good chance to point out the importance of transparency, credibility, signatures, encryption, and anonymity.
-1. Good chance to raise awareness for established tools like *git*, *gpg* and *tor* outside of the tech bubble.
-1. Very good possibility to point out an positively framed use case for online anonymity and *tor*.
-1. If digital voting will come, it must at least be based on Free and Open Source Software and community-approved concepts.
-1. The usage of established tools (git, gpg, tor) increase the level of understandability (e.g. compared to blockchain-based approaches).
+2. Good chance to point out the importance of transparency, credibility, signatures, encryption, and anonymity.
+3. Good chance to raise awareness for established tools like *git*, *gpg* and *tor* outside of the tech bubble.
+4. Very good possibility to point out an positively framed use case for online anonymity and *tor*.
+5. If digital voting will come, it must at least be based on Free and Open Source Software and community-approved concepts.
+6. The usage of established tools (git, gpg, tor) increase the level of understandability (e.g. compared to blockchain-based approaches).
 
 
 ### General Arguments for Online Voting
@@ -119,6 +119,7 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 ### Result and Remarks
 
 1. After the voting interval is over the GR contains $n1 votes, where $n1 <= $N and the difference is assumed to have voluntarily not voted. It also contains $n2 confirmations where  0 <= $n2 <= N. If all users acted as they should we have $n1 = $n2.
+2. The CT-A is needed only for confirmation of VTA (see below).
 
 ## What could go wrong and what happens then?
 

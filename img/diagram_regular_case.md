@@ -19,7 +19,9 @@ user_k-->GR: push vote-commit \n to incoming branch via tor
 S1a->GR: confirm valid pVAT-1a (via push)
 S1b->GR: \n confirm valid pVAT-1b (via push)
 S2->GR: \n confirm valid pVAT-2 (via push)
-Note over GR: vote commit \n is now in \n main branch
+Note over GR: - Check that {S1a, S1b, S2} \n confirmed pVAT \n - push vote commit \n to main branch
+GR->user_k: \n update local_repo
+Note over user_k: - Check that \n vote is correctly \n represented \n - wait random time \n interval
 user_k->GR: \n push confirmation-commit \n (signed with official key) \n to incomming
 Note over GR: GR: \n formally check commit \n (prevent spam) \n push to main main branch
 Note over S3: not needed \n in regular case

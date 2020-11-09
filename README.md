@@ -1,6 +1,6 @@
 # Proposing a Verifiable Anonymous Voting System Based on Git, Email, GPG, and Tor
 
-`__version__ = "0.5.2"`
+`__version__ = "0.5.3"`
 
 ## Preliminary Notes
 
@@ -33,8 +33,12 @@ This text is available at <https://github.com/cknoll/git-voting> and <https://co
 1. Lower participation hurdle for voters
     - Nobody wants to wait for hours in a line outside.
     - Nobody wants to visit a voting station if there are attack warnings or other intimidation mechanisms.
-2. Much Lower cost for holding a reliable election/voting (on almost any organizational level).
+2. Much Lower cost for holding a reliable election/voting (on almost any organizational level)
     - Allows the integration of more participative democratic elements (which is another complex topic, see below).
+3. Trust problems with paper ballots
+    - While in most public elections the local counting process can in principle be supervised by local voters, it remains intransparent how these results are aggregated at higher levels.
+        - see severe issues with election result messaging software discovered by CCC ([PC-Wahl_Bericht](https://www.ccc.de/system/uploads/230/original/PC-Wahl_Bericht_CCC.pdf)).
+    - Supervision of counting does not scale well.
 
 ### General Arguments against Online Voting
 
@@ -98,20 +102,25 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 
 ## How it works (regular case)
 
-1. S1 generates $N partial voting authorization tokens (pVATs).
-1. S1 generates $N anonymous email addresses (AEAs) like `anonymous-$j@voting.org` and associates them randomly to the $N official user addresses via email forwarding (S1 must run a mail server). The association table is kept secret by S1. Especially S2 is not allowed to know the associations.
-1. S1 sends the list of all pVATs and all AEAs to S2.
-1. S2 also generates $N pVATs. Then S2 combines randomly each pVAT from S1 with one pVAT from S2 and thereby forms a complete voting authorization token (VAT).
+1. S1{a,b} generate $N partial voting authorization tokens (→ pVAT1a-list, pVAT1b-list).
+1. S1{a,b} generates $N anonymous email addresses (AEAs) like `anonymous-$j@{a,b}-voting.org` and associates them randomly to the $N official user addresses via email forwarding (S1a and S1b each must run an indendent mail server). The association table is kept secret by S1{a,b}. Especially S2 is not allowed to know the associations.
+1. S1{a,b} sends the list of all pVATs and all AEAs to S2.
+1. S2 also generates $N pVATs. Then S2 creates triples by random combination ($pVAT1a, pVAT1b, $pVAT1c) and thereby forms a list of complete voting authorization token (VATs).
 1. S2 also generates $N confirmation tokens of kind A (CT-A).
 1. S2 associates randomly one VAT and one CT-A. This mapping is kept secret by S2, especially to S3.
-1. S2 sends one VAT-CT-A-pair to each anonymous e-mail address. Because the final recipient is unknown to S2, each email is encrypted with **all** $N public keys. Each email must also contain some random data to prevent S1 to create the ciphertext by itself and thus break anonymity when the VATs become public later. Each email is signed with the official signature of S2.
-1. User $k receives exactly one encrypted mail with one VAT-CT-A-pair signed by S2. They decrypt it with their own private key.
-1. User $k clones the GR and makes an anonymous commit with a new text file (votes/$RANDOMNAME1) containing "$VAT: $VOTING_CONTENT". The CT-A might be used later.
-1. User $k pushes this commit over an anonymous connection (via Tor) to the incoming branch of GR.
+1. S2 create a message containing:
+    - one VAT
+    - one CT-A
+    - some random data (used as salt)
+1. S2 encrypts this message with the public keys of **all** users. The encrypted message is split up into two blocks (block-A, block-B).
+1. S2 Sends block-{A,B} to `anonymous-$j@{a,b}-voting.org`. Thus S1{a,b} sees only part of the encrypted data. Each email is signed with the official signature of S2.
+1. User $k receives two encrypted emails, one via S1a, the other via S1b, each sent and signed by S2. They combine the blocks and decrypt it with their own private key. Thus the user obtains a VAT and a CT-A.
+1. User $k clones the GR and makes an anonymous commit with a new text file (votes/$VAT) containing "$VOTING_CONTENT". The VAT ist unique and can be used as filename. The CT-A might be used later.
+1. User $k pushes this commit over an anonymous connection (via tor) to the incoming branch of GR.
 1. S{1a,1b,2} confirms that the commit contains a valid pVAT from its pVAT{1a,1b,2}-list and pushes it to the `confirmed-pVAT{1a,1b,2}` branch (one after another).
 1. GR confirms that the other servers have confirmed the VAT and pushes the commit to the `main` branch.
 1. User $k updates their version of the repo (`git pull`) and checks that their vote is correctly represented in the `main` branch.
-1. After a random time delay (say 0.5 to 10 minutes) user $k commits a new text file (confirmations/$RANDOMNAME2) containing: "My vote is correctly represented.", signs this commit with their private key, and pushes it to incoming. Due to the signature, this commit is non-anonymous. But it is unrelated to the actual voting.
+1. After a random time delay (say 0.5 to 10 minutes) user $k commits a new text file (confirmations/$RANDOMNAME) containing: "My vote is correctly represented.", signs this commit with their private key, and pushes it to incoming. Due to the signature, this commit is non-anonymous. But it is unrelated to the actual voting.
 1. GR formally checks this commit (spam prevention) and pushes it to the `main` branch.
 
 
@@ -177,3 +186,6 @@ This section collects attack scenarios and responses. It probably grows over tim
     - Potential fraud mechanisms do not scale very well (easy for 10 votes, hard for 10K votes)
     - Voting machines are badly maintained can be attacked (irrelevant to this approach)
     - Voting from private devices is even more dangerous (virus infection, botnets, ...)
+
+- [Analyse einer Wahlsoftware (Analysis of an Election Software)](https://www.ccc.de/system/uploads/230/original/PC-Wahl_Bericht_CCC.pdf)
+    - In Germany there was widespread use of insecure software for communicating results of paper ballot voting to higher levels.

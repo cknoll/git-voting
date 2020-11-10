@@ -1,14 +1,21 @@
 # Proposing a Verifiable Anonymous Voting System Based on Git, Email, GPG, and Tor
 
-`__version__ = "0.5.4"`
+`__version__ = "0.5.5"`
 
 ## Preliminary Notes
 
 The following thoughts were triggered by the turbulences around the US presidential elections 2020, the ongoing protests in Belarus, allegations of election fraud in Tanzania and the discussion about voting on online party conventions in Germany. I am neither an expert in (online) voting systems nor in cybersecurity (however, see "What already exists"). Instead I am just a regular user of email, gpg, git and tor and I am interested in how groups can manage the problem of decision-making without disintegrating.
 
-As the above version number suggests the proposal has evolved since its initial publication mainly due to feedback. It is probably not trivial to understand. Visualization is in preparation.
+As the above version number suggests the proposal has evolved since its initial publication mainly due to feedback. It is probably not trivial to understand. Visualization and text might complement each other.
 
-The proposal does contain some flaws which I am aware of and probably many more. Nevertheless, it might be a starting point for something working. The assumptions/requirements below are in part admittedly unrealistic (E.g. "Each user can use git and gpg"). They are stated this way to simplify the explanation of the voting protocol. I am confident that they can be relaxed w.r.t. to usability and robustness with a more elaborated approach and by implementing most of the user-activities in an (optional) open-source software frontend.
+The proposal does contain some flaws which I am aware of and probably many more. Nevertheless, it might be a starting point for something working.
+
+---
+
+**Important:** The assumptions/requirements below are obviously unrealistic (E.g. "Each user can use git and gpg"). They are stated this way to simplify the explanation of the voting protocol. I am confident that they can be relaxed w.r.t. to usability and robustness with a more elaborated approach and by implementing most of the user-activities in an (optional) open-source software frontend. However, they mainly serve to keep the discussion of the backend mechanics focused.
+
+---
+
 
 This text is available at <https://github.com/cknoll/git-voting> and <https://codeberg.org/cknoll/git-voting>.
 
@@ -61,13 +68,17 @@ This text is available at <https://github.com/cknoll/git-voting> and <https://co
 3. Availability of cheap and legally safe online voting could raise the political pressure towards weakening parliaments in favor of plebiscites. This could lead to much more "populist" politics and increase the influence of unbalanced media and misinformation.
     - Unbalanced media and misinformation are general problems for (democratic) societies. An online voting procedure which is based on transparent processes and verifiability and not on the principle "Trust me, I tell the truth", could foster a more critical approach in media consumption and media production. It could raise the bar in what people believe and what not.
     - The decision about plebiscites (on which levels, for which kinds of issues, who can initiate and formulate them, ...) should be up to the sovereign anyway.
-
+4. The fundamental insecurity of *the platform* (potential compromising of essential internet infrastructure by "[intelligence agencies](https://en.wikipedia.org/wiki/Intelligence_agency)" and other dangerous actors).
+    - Severe concern! Citing from documents leaked by E. Snowden: *"activities such as […] e-voting […] beg to be mined"*
+        - Source: https://www.evote-net.ch/index.html
+    - Potential countermeasure: widespread usage of [open source hardware](https://en.wikipedia.org/wiki/Open-source_hardware)
+        - Should be a political demand.
+    - Argument: For votes in which not too much is at stake, this threat seems unrealistic. It would already be an improvement if online-voting were robust against other types of attacks (like corrupting one single server).
 
 
 ### Personal Conclusion of General Arguments
 
 Voting is a delicate act. Digital voting bears many dangers (see assumptions below), but so does paper voting (see current and historical examples). In any case, I would prefer a Free and Open Source approach based on established and trusted tools and principles instead of someday using *facebook vote®*.
-
 
 
 ## Guiding principles
@@ -213,7 +224,7 @@ This section collects attack scenarios and responses. It probably grows over tim
     - Voters were redirected to a fake server by DNS spoofing. On that server their inputs could have been esily captured and manipulated.
 
 
-### What already exists
+### What already exists (learned during feedback)
 
 1. https://heliosvoting.org/
     - Free Software (Apache License)
@@ -223,5 +234,5 @@ This section collects attack scenarios and responses. It probably grows over tim
 2. https://www.belenios.org/
     - Free Software (AGPL)
     - Promises end-to-end verifiability
-    - Seems to rely a central server
+    - Seems to rely a central server (?)
     - https://gitlab.inria.fr/belenios/belenios, last commit 2020

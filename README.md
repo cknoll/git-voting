@@ -199,7 +199,7 @@ This section collects attack scenarios and responses. It probably grows over tim
 ## Criticism and Responses
 
 - GPG was never audited and has bus factor 1
-    - We could use [openpgp](https://www.openpgp.org/software/) instead
+    - We could use [openpgp](https://www.openpgp.org/software/) instead.
 - Tor is controlled via the exit nodes, many of which are operated by intelligence agencies.
     - The tor connections could be replaced by encrypted and anonymized emails. Like the VAT-distribution but the other way around.
     This makes the approach more complicated, though.

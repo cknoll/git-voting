@@ -1,6 +1,6 @@
 # Proposing a Verifiable Anonymous Voting System Based on Git, Email, GPG, and Tor
 
-`__version__ = "0.5.6"`
+`__version__ = "0.5.7"`
 
 ## Preliminary Notes
 
@@ -194,6 +194,15 @@ This section collects attack scenarios and responses. It probably grows over tim
     - The result cannot reasonably be disputed if the number of votes and valid confirmations matches. This can be checked by everyone.
 3. Fast and Transparent Evaluation
     - Voting could be evaluated by anyone because the source data is publicly available in plain text. Evaluation software can be very easy.
+
+
+## Criticism and Responses
+
+- GPG was never audited and has bus factor 1
+    - We could use [openpgp](https://www.openpgp.org/software/) instead
+- Tor is controlled via the exit nodes, many of which are operated by intelligence agencies.
+    - The tor connections could be replaced by encrypted and anonymized emails. Like the VAT-distribution but the other way around.
+    This makes the approach more complicated, though.
 
 ## Further Ideas
 

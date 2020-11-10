@@ -1,6 +1,6 @@
 # Proposing a Verifiable Anonymous Voting System Based on Git, Email, GPG, and Tor
 
-`__version__ = "0.5.5"`
+`__version__ = "0.5.6"`
 
 ## Preliminary Notes
 
@@ -189,8 +189,8 @@ This section collects attack scenarios and responses. It probably grows over tim
 1. Anonymity
     - Only the user knows their VAT because of random assignation, encrypted emails, and anonymous connections.
     - No single entity alone can break anonymity. Either S1{a|b} or S3 must conspire with S2 to do this. It would be easy to add more independent data-mixing layers to increase the number of necessary participants in the conspiration.
-2. Trust:
-    - Any fraud against the users is detectable, each single user can confirm that their vote is represented in the result.
+2. Trust
+    - Any fraud against the users is detectable: Each single user can confirm that their vote is represented in the result.
     - The result cannot reasonably be disputed if the number of votes and valid confirmations matches. This can be checked by everyone.
 3. Fast and Transparent Evaluation
     - Voting could be evaluated by anyone because the source data is publicly available in plain text. Evaluation software can be very easy.
@@ -236,3 +236,6 @@ This section collects attack scenarios and responses. It probably grows over tim
     - Promises end-to-end verifiability
     - Seems to rely a central server (?)
     - https://gitlab.inria.fr/belenios/belenios, last commit 2020
+3. https://en.wikipedia.org/wiki/End-to-end_auditable_voting_systems
+    - Extensive collection of E2E verifiable voting approaches. Too much to read for one day.
+    - Still, the current approach might be simpler to implement because it uses only established tools.

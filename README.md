@@ -1,14 +1,14 @@
 # Proposing a Verifiable Anonymous Voting System Based on Git, Email, GPG, and Tor
 
-`__version__ = "0.5.3"`
+`__version__ = "0.5.4"`
 
 ## Preliminary Notes
 
-As far as I know, there is currently no secure online voting system. The following thoughts were triggered by the turbulences around the US presidential elections 2020, the ongoing protests in Belarus and the discussion about voting on online party conventions in Germany. I am neither an expert in (online) voting systems nor in cybersecurity. Instead I am just a regular user of email, gpg, git and tor and I am interested in how groups can manage the problem of decision-making without disintegrating.
+The following thoughts were triggered by the turbulences around the US presidential elections 2020, the ongoing protests in Belarus, allegations of election fraud in Tanzania and the discussion about voting on online party conventions in Germany. I am neither an expert in (online) voting systems nor in cybersecurity (however, see "What already exists"). Instead I am just a regular user of email, gpg, git and tor and I am interested in how groups can manage the problem of decision-making without disintegrating.
 
 As the above version number suggests the proposal has evolved since its initial publication mainly due to feedback. It is probably not trivial to understand. Visualization is in preparation.
 
-The proposal does contain some flaws which I am aware of and probably many more. Nevertheless, it might be a starting point for something working. The assumptions below are in part admittedly unrealistic (E.g. "Each user can use git and gpg"). They are stated this way to simplify the explanation of the voting protocol. I am confident that they can be relaxed w.r.t. to usability and robustness with a more elaborated approach and by implementing most of the user-activities in an (optional) open-source software frontend.
+The proposal does contain some flaws which I am aware of and probably many more. Nevertheless, it might be a starting point for something working. The assumptions/requirements below are in part admittedly unrealistic (E.g. "Each user can use git and gpg"). They are stated this way to simplify the explanation of the voting protocol. I am confident that they can be relaxed w.r.t. to usability and robustness with a more elaborated approach and by implementing most of the user-activities in an (optional) open-source software frontend.
 
 This text is available at <https://github.com/cknoll/git-voting> and <https://codeberg.org/cknoll/git-voting>.
 
@@ -16,7 +16,7 @@ This text is available at <https://github.com/cknoll/git-voting> and <https://co
 
 ## Motivation
 
-(This section was included later in repsonse to questions and citicism. It is not necessary to technically understand the rest.)
+(This section was included later in response to questions and criticism. It is not necessary to technically understand the rest.)
 
 ### Why Should the Free Software Community Think About Online Voting?
 
@@ -66,7 +66,7 @@ This text is available at <https://github.com/cknoll/git-voting> and <https://co
 
 ### Personal Conclusion of General Arguments
 
-Voting is a delicate act. Digital voting bears many dangers (see assumptions above), but so does paper voting (see current and historical examples). In any case, I would prefer a Free and Open Source approach based on established and trusted tools and principles instead of someday using *facebook vote®*.
+Voting is a delicate act. Digital voting bears many dangers (see assumptions below), but so does paper voting (see current and historical examples). In any case, I would prefer a Free and Open Source approach based on established and trusted tools and principles instead of someday using *facebook vote®*.
 
 
 
@@ -78,16 +78,21 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 1. Power and sensitive knowledge for each entity must be divided sufficiently such that fraud is impossible without conspiration with other entities.
 1. Each entity must have strong rational incentives to comply with the rules and to report any attempts of conspiration ("immune system").
 
-## Assumptions:
+## Assumptions and Requirements:
 
-1. $N users want (and are entitled) to vote.
-1. $N < 100.
-2. No user shall vote more than once.
-3. The fact of whether they voted can be public, the voting content shall be anonymous.
+These assumptions serve to specify the environment on which the system operates. They are obviously unrealistic. This is to simplify the explanation of the system. Once the system is acknowledged to work under these assumptions, we can think about how to relax them.
+
+### Environmental Assumptions
+
+1. $N < 100 users want (and are entitled) to vote.
 4. There is a predefined time interval in which voting is allowed.
 5. Each user has an official email address (say `user-$i@voting.org`) to which they have exclusive access to.
 6. Each user can use git and gnupg.
 7. Every user has a pgp key-pair and the public key is known to everyone else and associated with this user.
+
+
+### Assumptions about Entities and their Relations
+
 9. There are five servers operated by independent actors that do not cooperate against the rules. In particular, they do not share unauthorized information among them nor with the public.
     - Server 1a (S1a)
     - Server 1b (S1b)
@@ -98,6 +103,19 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 10. S1a, S1b, S2 have push access to the branches `confirmed-pVAT1a`, `confirmed-pVAT1b`, and `confirmed-pVAT2`, respectively
 12. The public key for each server is known to and trusted by all users. This can be ensured during voter registration.
 11. The servers for the infrastructure and the devices on which the users vote are not corrupted and are secured against unauthorized access.
+
+
+## Requirements
+
+These are aspects which should be provided by the system:
+
+1. Only entitled users are allowed to vote.
+1. No user shall vote more than once.
+1. The fact of whether a particular user voted can be public, the voting content shall be anonymous.
+1. Every user must be able to formally confirm that their particular vote is represented correctly.
+1. Only confirmed votes are counted.
+1. One single entity with malicious intents should not be able to commit unnoticed fraud.
+
 
 
 ## How it works (regular case)
@@ -120,7 +138,7 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions abo
 1. S{1a,1b,2} confirms that the commit contains a valid pVAT from its pVAT{1a,1b,2}-list and pushes it to the `confirmed-pVAT{1a,1b,2}` branch (one after another).
 1. GR confirms that the other servers have confirmed the VAT and pushes the commit to the `main` branch.
 1. User $k updates their version of the repo (`git pull`) and checks that their vote is correctly represented in the `main` branch.
-1. After a random time delay (say 0.5 to 10 minutes) user $k commits a new text file (confirmations/$RANDOMNAME) containing: "My vote is correctly represented.", signs this commit with their private key, and pushes it to incoming. Due to the signature, this commit is non-anonymous. But it is unrelated to the actual voting.
+1. After a random time delay (say 0.5 to 10 minutes) user $k commits a new text file (confirmations/$RANDOMNAME) containing: "My vote is correctly represented.", signs this commit with their private key, and pushes it to the `incoming`-branch. Due to the signature, this commit is non-anonymous. But it is unrelated to the actual voting.
 1. GR formally checks this commit (spam prevention) and pushes it to the `main` branch.
 
 
@@ -187,5 +205,23 @@ This section collects attack scenarios and responses. It probably grows over tim
     - Voting machines are badly maintained can be attacked (irrelevant to this approach)
     - Voting from private devices is even more dangerous (virus infection, botnets, ...)
 
-- [Analyse einer Wahlsoftware (Analysis of an Election Software)](https://www.ccc.de/system/uploads/230/original/PC-Wahl_Bericht_CCC.pdf)
+- ["Analysis of an Election Software" (German)](https://www.ccc.de/system/uploads/230/original/PC-Wahl_Bericht_CCC.pdf)
     - In Germany there was widespread use of insecure software for communicating results of paper ballot voting to higher levels.
+
+- [Successful "Man in the Middle"-Attack on the Swiss e-voting system](https://www.tagesanzeiger.ch/schweiz/standard/alle-evotingsysteme-der-schweiz-sind-unterwandert/story/31191771)
+    - Demonstration only, no real harm was done.
+    - Voters were redirected to a fake server by DNS spoofing. On that server their inputs could have been esily captured and manipulated.
+
+
+### What already exists
+
+1. https://heliosvoting.org/
+    - Free Software (Apache License)
+    - Promises end-to-end verifiability
+    - Seems to rely a central server
+    - Last commit 2017
+2. https://www.belenios.org/
+    - Free Software (AGPL)
+    - Promises end-to-end verifiability
+    - Seems to rely a central server
+    - https://gitlab.inria.fr/belenios/belenios, last commit 2020

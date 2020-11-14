@@ -1,23 +1,20 @@
-# Proposing a Verifiable Anonymous Voting System Based on Git, Email, GPG, and Tor
+# Proposing a Verifiable Anonymous Voting System Based on Encrypted Email and Git
 
-`__version__ = "0.5.7"`
+`__version__ = "0.5.8"`
 
 ## Preliminary Notes
 
-The following thoughts were triggered by the turbulences around the US presidential elections 2020, the ongoing protests in Belarus, allegations of election fraud in Tanzania and the discussion about voting on online party conventions in Germany. I am neither an expert in (online) voting systems nor in cybersecurity (however, see "What already exists"). Instead I am just a regular user of email, gpg, git and tor and I am interested in how groups can manage the problem of decision-making without disintegrating.
+The following thoughts were triggered by the turbulences around the US presidential elections 2020, the ongoing protests in Belarus, allegations of election fraud in Tanzania and the discussion about voting on online party conventions in Germany. I am neither an expert in (online) voting systems nor in cybersecurity. Instead I am just a regular user of encrypted email and git and I am interested in how groups can manage the problem of decision-making without disintegrating.
 
-As the above version number suggests the proposal has evolved since its initial publication mainly due to feedback. It is probably not trivial to understand. Visualization and text might complement each other.
+As the above version number suggests the proposal has evolved since its initial publication mainly due to feedback. The following text is probably not trivial to understand. Visualization and text might complement each other.
 
-The proposal does contain some flaws which I am aware of and probably many more. Nevertheless, it might be a starting point for something working.
-
----
-
-**Important:** The assumptions/requirements below are obviously unrealistic (E.g. "Each user can use git and gpg"). They are stated this way to simplify the explanation of the voting protocol. I am confident that they can be relaxed w.r.t. to usability and robustness with a more elaborated approach and by implementing most of the user-activities in an (optional) open-source software frontend. However, they mainly serve to keep the discussion of the backend mechanics focused.
+The proposal does contain some flaws which I am aware of and probably some more. Nevertheless, it might be a starting point for something working.
 
 ---
 
+**Important:** The assumptions/requirements below are obviously unrealistic (E.g. "Each user can use git and gpg"). They are stated this way to simplify the explanation of the voting protocol. I am confident that they can be relaxed w.r.t. to usability and robustness with a more elaborated approach and by implementing most of the user-activities in an (optional) open-source software frontend. However, the assumptions mainly serve to keep the discussion focussed to the backend mechanics.
 
-This text is available at <https://github.com/cknoll/git-voting> and <https://codeberg.org/cknoll/git-voting>.
+---
 
 
 
@@ -29,10 +26,10 @@ This text is available at <https://github.com/cknoll/git-voting> and <https://co
 
 1. Currently high medial awareness due to US presidential elections and a significant amount of people who claim irregularities.
 2. Good chance to point out the importance of transparency, credibility, signatures, encryption, and anonymity.
-3. Good chance to raise awareness for established tools like *git*, *gpg* and *tor* outside of the tech bubble.
-4. Very good possibility to point out an positively framed use case for online anonymity and *tor*.
+3. Good chance to raise awareness for established tools like *git*, *gpg* or *openPGP*.
+4. Good possibility to point out an positively framed use case for online anonymity.
 5. If digital voting will come, it must at least be based on Free and Open Source Software and community-approved concepts.
-6. The usage of established tools (git, gpg, tor) increase the level of understandability (e.g. compared to blockchain-based approaches).
+6. The usage of established tools (git, gpg, ...) increase the level of understandability (e.g. compared to blockchain-based approaches).
 
 
 ### General Arguments for Online Voting
@@ -86,7 +83,7 @@ Voting is a delicate act. Digital voting bears many dangers (see assumptions bel
 1. When it comes to voting there is no single trusted authority.
 1. Only Free and Open Source Software can be trustable software.
 1. Transparency prevents fraud and unjustified accusations of fraud.
-1. Power and sensitive knowledge for each entity must be divided sufficiently such that fraud is impossible without conspiration with other entities.
+1. Power and sensitive knowledge must be divided sufficiently among participating entities such that fraud is impossible without conspiration with other entities.
 1. Each entity must have strong rational incentives to comply with the rules and to report any attempts of conspiration ("immune system").
 
 ## Assumptions and Requirements:
@@ -95,10 +92,10 @@ These assumptions serve to specify the environment on which the system operates.
 
 ### Environmental Assumptions
 
-1. $N < 100 users want (and are entitled) to vote.
+1. $N < 1000 users want (and are entitled) to vote.
 4. There is a predefined time interval in which voting is allowed.
 5. Each user has an official email address (say `user-$i@voting.org`) to which they have exclusive access to.
-6. Each user can use git and gnupg.
+6. Each user can use git and gpg or openPGP
 7. Every user has a pgp key-pair and the public key is known to everyone else and associated with this user.
 
 
@@ -146,6 +143,7 @@ These are aspects which should be provided by the system:
 1. User $k receives two encrypted emails, one via S1a, the other via S1b, each sent and signed by S2. They combine the blocks and decrypt it with their own private key. Thus the user obtains a VAT and a CT-A.
 1. User $k clones the GR and makes an anonymous commit with a new text file (votes/$VAT) containing "$VOTING_CONTENT". The VAT ist unique and can be used as filename. The CT-A might be used later.
 1. User $k pushes this commit over an anonymous connection (via tor) to the incoming branch of GR.
+    - Alternatively, they could send a patch to GR via an encrypted anonymized email.
 1. S{1a,1b,2} confirms that the commit contains a valid pVAT from its pVAT{1a,1b,2}-list and pushes it to the `confirmed-pVAT{1a,1b,2}` branch (one after another).
 1. GR confirms that the other servers have confirmed the VAT and pushes the commit to the `main` branch.
 1. User $k updates their version of the repo (`git pull`) and checks that their vote is correctly represented in the `main` branch.
@@ -167,7 +165,7 @@ This section collects attack scenarios and responses. It probably grows over tim
 
 1. $n2 < $n1 (not all votes are confirmed):
     - Possible reasons: a) There could have been problems between voting and confirmation (device failure, ...) or b) The user actively decides not to confirm.
-    - To ensure integrity of the voting we only count confirmed votes. Challenge: filter out those VATs which are not confirmed without breaking anonymity.
+    - To ensure integrity of the voting, we only count confirmed votes. Challenge: filter out those VATs which are not confirmed without breaking anonymity.
         - S2 generates two more lists of confirmation tokens each list of length $n2: CT-B- and CT-C-list. The CT-A list was generated earlier and (as a whole) kept secret by S2. However, each user already has a personal CT-A from the first (anonymously received) email.
         - S2 publishes a list of all VAT-hashes, a list of all corresponding CT-A-hashes, and an unordered list of all CT-C hashes.
         - S2 sends both the CT-B- and CT-C-list to S3
@@ -199,8 +197,8 @@ This section collects attack scenarios and responses. It probably grows over tim
 ## Criticism and Responses
 
 - GPG was never audited and has bus factor 1
-    - We could use [openpgp](https://www.openpgp.org/software/) instead.
-- Tor is controlled via the exit nodes, many of which are operated by intelligence agencies.
+    - We could other software instead: [openpgp](https://www.openpgp.org/software/) or [sequoia-pgp](https://sequoia-pgp.org/).
+- Tor is controlled via the exit nodes, many of which are operated by (foreingn) intelligence agencies.
     - The tor connections could be replaced by encrypted and anonymized emails. Like the VAT-distribution but the other way around.
     This makes the approach more complicated, though.
 

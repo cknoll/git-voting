@@ -1,6 +1,6 @@
 # Proposing a Verifiable Anonymous Voting System Based on Encrypted Email and Git
 
-`__version__ = "0.5.8"`
+`__version__ = "0.6.0"` (2020-11-23 13:49:00)
 
 ## Preliminary Notes
 
@@ -201,6 +201,8 @@ This section collects attack scenarios and responses. It probably grows over tim
 - Tor is controlled via the exit nodes, many of which are operated by (foreingn) intelligence agencies.
     - The tor connections could be replaced by encrypted and anonymized emails. Like the VAT-distribution but the other way around.
     This makes the approach more complicated, though.
+- In Git the order of merging matters this causes problems with many independet actors
+    - Solution approach: <https://darcsbook.acmelabs.space/chapter01.html#why-darcs>
 
 ## Further Ideas
 
@@ -218,17 +220,29 @@ This section collects attack scenarios and responses. It probably grows over tim
 - [Why Electronic Voting Is Still A Bad Idea](https://www.youtube.com/watch?v=LkH2r-sNjQs), Tom Scott, 2020, youtube
     - Voting should be based on *trust* and *anonymity*.
     - In national elections there are probably high potential actors with huge budgets who want to influence the result to their favor.
-    - Paper ballot version has matured over centuries → fair robustness against fraud attempts
-    - Potential fraud mechanisms do not scale very well (easy for 10 votes, hard for 10K votes)
-    - Voting machines are badly maintained can be attacked (irrelevant to this approach)
-    - Voting from private devices is even more dangerous (virus infection, botnets, ...)
+    - Paper ballot version has matured over centuries → fair robustness against fraud attempts.
+    - Potential fraud mechanisms do not scale very well (easy for 10 votes, hard for 10K votes).
+    - Voting machines are badly maintained can be attacked (irrelevant to this approach).
+    - Voting from private devices is even more dangerous (virus infection, botnets, ...).
 
 - ["Analysis of an Election Software" (German)](https://www.ccc.de/system/uploads/230/original/PC-Wahl_Bericht_CCC.pdf)
     - In Germany there was widespread use of insecure software for communicating results of paper ballot voting to higher levels.
 
+- [Logbuch:Netzpolitik: LNP356](https://logbuch-netzpolitik.de/lnp356-gesegneter-entscheidungswahn) (german)
+    - In the last part of the audio (starting at 01:30:00h): interesting updates on the PC-Wahl story (see above).
+    - Git is mentioned as a possibility to create transparency.
+
+
 - [Successful "Man in the Middle"-Attack on the Swiss e-voting system](https://www.tagesanzeiger.ch/schweiz/standard/alle-evotingsysteme-der-schweiz-sind-unterwandert/story/31191771)
     - Demonstration only, no real harm was done.
     - Voters were redirected to a fake server by DNS spoofing. On that server their inputs could have been esily captured and manipulated.
+
+- [Going from Bad to Worse: From Internet Voting to Blockchain Voting](https://people.csail.mit.edu/rivest/pubs/PSNR20.pdf)
+    - Several persons brought this recent preprint to my attention.
+    - Authors: Sunoo Park,  Michael Specter, Neha Narula,  [Ronald L. Rivest](https://en.wikipedia.org/wiki/Ron_Rivest) (cf. "RSA")
+    - Very interesting: Section 4 (collection of critical questions which helps to analyse online-voting systems)
+
+
 
 
 ### What already exists (learned during feedback)
